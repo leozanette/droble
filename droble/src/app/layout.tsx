@@ -1,3 +1,4 @@
+import { ReactNode } from 'react'
 import './globals.css'
 
 export const metadata = {
@@ -5,14 +6,10 @@ export const metadata = {
   description: 'Organize your style',
 }
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
+export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
-      <body className="text-zinc-50 bg-zinc-700">{children}</body>
+      <body className="bg-zinc-700 text-zinc-50">{children}</body>
     </html>
   )
 }
