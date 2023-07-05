@@ -1,6 +1,7 @@
 'use client'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
+import { useRouter } from 'next/navigation'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Input } from '@/components/input'
@@ -8,6 +9,9 @@ import { Button } from '@/components/button'
 import Link from 'next/link'
 
 const createUserFormSchema = z.object({
+  name: z.string().nonempty().min(3),
+  lastName: z.string().nonempty().min(3),
+  cpf: z.string().nonempty().length(11),
   email: z
     .string()
     .nonempty('O e-mail é obrigatório')
@@ -15,10 +19,12 @@ const createUserFormSchema = z.object({
     .toLowerCase(),
   password: z.string().min(6, 'Minimo 6 catacteres'),
 })
+
 type CreateUserFormData = z.infer<typeof createUserFormSchema>
 
-export default function Home() {
+export default function Register() {
   console.log('renderizou')
+  const router = useRouter()
   const [output, setOutput] = useState('')
   const {
     register,
@@ -27,20 +33,44 @@ export default function Home() {
   } = useForm<CreateUserFormData>({
     resolver: zodResolver(createUserFormSchema),
   })
-
+  //
   function createUser(data: any) {
     setOutput(JSON.stringify(data, null, 2))
+    console.log(output)
+    router.push('/')
   }
 
   return (
     <div className="flex h-screen flex-col">
       <div className="flex flex-1">
         <aside className="w-64 bg-zinc-900 p-6">SideBar</aside>
-        <main className="flex h-screen flex-1 flex-col items-center justify-around gap-10 p-6">
+        <main className="mb-32 flex flex-1 flex-col items-center justify-around gap-10 p-6">
           <form
             className="flex max-w-xs flex-col gap-4"
             onSubmit={handleSubmit(createUser)}
           >
+            <div className="flex flex-col gap-1">
+              <Input
+                label="Name"
+                helperText={errors.name?.message}
+                {...register('name')}
+              />
+            </div>
+            <div className="flex flex-col gap-1">
+              <Input
+                label="Last Name"
+                helperText={errors.lastName?.message}
+                {...register('lastName')}
+              />
+            </div>
+            <div className="flex flex-col gap-1">
+              <Input
+                label="CPF"
+                placeholder="000.000.000-00"
+                helperText={errors.cpf?.message}
+                {...register('cpf')}
+              />
+            </div>
             <div className="flex flex-col gap-1">
               <Input
                 label="E-mail"
@@ -57,18 +87,16 @@ export default function Home() {
                 {...register('password')}
               />
             </div>
-            <Button type="submit">Login</Button>
             <div className="flex flex-col gap-1">
-              <Link
+              <Button
                 className="flex h-10 items-center justify-center rounded  bg-rose-500 font-semibold text-white hover:bg-rose-600"
-                href="register"
+                type="submit"
               >
                 {/* <Button type="button">Register</Button> */}
                 Register
-              </Link>
+              </Button>
             </div>
           </form>
-          <pre className="mt-6">{output}</pre>
         </main>
       </div>
       <footer className="border-zinc-700 bg-zinc-800 p-6">Footer</footer>
