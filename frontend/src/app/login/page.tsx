@@ -1,38 +1,14 @@
 'use client'
-import { useState } from 'react'
-import { useForm } from 'react-hook-form'
-import { z } from 'zod'
-import { zodResolver } from '@hookform/resolvers/zod'
+// import { useState } from 'react'
 import Link from 'next/link'
 import { Form } from '@/components/Form'
 import { FormButton } from '@/components/Form/FormButton'
 import { FormRoot } from '@/components/Form/FormRoot'
-
-const createLoginFormSchema = z.object({
-  email: z
-    .string()
-    .nonempty('O e-mail é obrigatório')
-    .email('E-mail inválido')
-    .toLowerCase(),
-  password: z.string().min(6, 'Minimo 6 catacteres'),
-})
-type CreateLoginFormData = z.infer<typeof createLoginFormSchema>
+import { useLogin } from './useLogin'
 
 export default function Login() {
+  const { errors, handleSubmit, register, createUser, output } = useLogin()
   console.log('renderizou')
-  const [output, setOutput] = useState('')
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<CreateLoginFormData>({
-    resolver: zodResolver(createLoginFormSchema),
-  })
-
-  function createUser(data: any) {
-    console.log('createUser')
-    setOutput(JSON.stringify(data, null, 2))
-  }
 
   return (
     <div className="flex h-screen flex-col">
