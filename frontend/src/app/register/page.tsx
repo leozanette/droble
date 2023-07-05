@@ -1,102 +1,63 @@
 'use client'
-import { useState } from 'react'
-import { useForm } from 'react-hook-form'
-import { useRouter } from 'next/navigation'
-import { z } from 'zod'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { Input } from '@/components/input'
-import { Button } from '@/components/button'
-import Link from 'next/link'
-
-const createUserFormSchema = z.object({
-  name: z.string().nonempty().min(3),
-  lastName: z.string().nonempty().min(3),
-  cpf: z.string().nonempty().length(11),
-  email: z
-    .string()
-    .nonempty('O e-mail é obrigatório')
-    .email('E-mail inválido')
-    .toLowerCase(),
-  password: z.string().min(6, 'Minimo 6 catacteres'),
-})
-
-type CreateUserFormData = z.infer<typeof createUserFormSchema>
+import { useRegister } from './useRegister'
+import { Form } from '@/components/Form'
 
 export default function Register() {
+  const { errors, handleSubmit, register, createUser } = useRegister()
   console.log('renderizou')
-  const router = useRouter()
-  const [output, setOutput] = useState('')
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<CreateUserFormData>({
-    resolver: zodResolver(createUserFormSchema),
-  })
-  //
-  function createUser(data: any) {
-    setOutput(JSON.stringify(data, null, 2))
-    console.log(output)
-    router.push('/')
-  }
-
   return (
     <div className="flex h-screen flex-col">
       <div className="flex flex-1">
         <aside className="w-64 bg-zinc-900 p-6">SideBar</aside>
         <main className="mb-32 flex flex-1 flex-col items-center justify-around gap-10 p-6">
-          <form
-            className="flex max-w-xs flex-col gap-4"
-            onSubmit={handleSubmit(createUser)}
-          >
-            <div className="flex flex-col gap-1">
-              <Input
-                label="Name"
-                helperText={errors.name?.message}
-                {...register('name')}
-              />
-            </div>
-            <div className="flex flex-col gap-1">
-              <Input
-                label="Last Name"
-                helperText={errors.lastName?.message}
-                {...register('lastName')}
-              />
-            </div>
-            <div className="flex flex-col gap-1">
-              <Input
+          <Form.Root handleSubmit={() => handleSubmit(createUser)}>
+            <Form.InputContainer>
+              <Form.Input label="Name" {...register('name')} />
+              {errors.name && (
+                <Form.InputError helperText={errors.name.message} />
+              )}
+            </Form.InputContainer>
+            <Form.InputContainer>
+              <Form.Input label="Last Name" {...register('lastName')} />
+              {errors.lastName && (
+                <Form.InputError helperText={errors.lastName.message} />
+              )}
+            </Form.InputContainer>
+            <Form.InputContainer>
+              <Form.Input
                 label="CPF"
-                placeholder="000.000.000-00"
-                helperText={errors.cpf?.message}
+                placeholder="00000000000"
                 {...register('cpf')}
               />
-            </div>
-            <div className="flex flex-col gap-1">
-              <Input
-                label="E-mail"
-                type="email"
-                helperText={errors.email?.message}
-                {...register('email')}
-              />
-            </div>
-            <div className="flex flex-col gap-1">
-              <Input
+              {errors.cpf && (
+                <Form.InputError helperText={errors.cpf.message} />
+              )}
+            </Form.InputContainer>
+            <Form.InputContainer>
+              <Form.Input label="E-mail" type="email" {...register('email')} />
+              {errors.email && (
+                <Form.InputError helperText={errors.email.message} />
+              )}
+            </Form.InputContainer>
+            <Form.InputContainer>
+              <Form.Input
                 label="Senha"
-                helperText={errors.password?.message}
                 type="password"
                 {...register('password')}
               />
-            </div>
-            <div className="flex flex-col gap-1">
-              <Button
+              {errors.password && (
+                <Form.InputError helperText={errors.password.message} />
+              )}
+            </Form.InputContainer>
+            <Form.InputContainer>
+              <Form.Button
                 className="flex h-10 items-center justify-center rounded  bg-rose-500 font-semibold text-white hover:bg-rose-600"
                 type="submit"
               >
-                {/* <Button type="button">Register</Button> */}
                 Register
-              </Button>
-            </div>
-          </form>
+              </Form.Button>
+            </Form.InputContainer>
+          </Form.Root>
         </main>
       </div>
       <footer className="border-zinc-700 bg-zinc-800 p-6">Footer</footer>

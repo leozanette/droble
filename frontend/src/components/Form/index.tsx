@@ -6,7 +6,7 @@ import { FormRoot } from './FormRoot'
 
 export const Form = {
   Root: FormRoot,
-  InputContiner: FormInputContainer,
+  InputContainer: FormInputContainer,
   Button: FormButton,
   Input: FormInput,
   InputError: FormInputError,

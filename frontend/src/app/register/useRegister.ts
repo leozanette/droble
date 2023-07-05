@@ -1,21 +1,25 @@
 import { useForm } from 'react-hook-form'
-import { CreateLoginFormData } from './types'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { createLoginFormSchema } from './schema'
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { createUserFormSchema } from './schema'
+import { CreateRegisterFormData } from './types'
 
-export const useLogin = () => {
+export const useRegister = () => {
+  const router = useRouter()
   const [output, setOutput] = useState('')
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<CreateLoginFormData>({
-    resolver: zodResolver(createLoginFormSchema),
+  } = useForm<CreateRegisterFormData>({
+    resolver: zodResolver(createUserFormSchema),
   })
-
+  //
   function createUser(data: any) {
     setOutput(JSON.stringify(data, null, 2))
+    console.log(output)
+    router.push('/')
   }
 
   return {
